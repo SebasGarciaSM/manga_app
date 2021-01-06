@@ -19,7 +19,7 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
   List<String> link = List();
   List<String> image;
   List<String> chapters = List();
-  List<String> views = List(); 
+  List<String> views = List();
 
   void getData() async {
     final response = await http.get('http://mangafox.icu/latest-manga/the-duchess-50-tea-recipes');
