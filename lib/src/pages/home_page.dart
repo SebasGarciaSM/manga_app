@@ -18,6 +18,8 @@ class MyHomepageState extends State<MyHomepage> {
   List<String> description = List();
   List<String> images = List();
   List<String> chapters = List();
+
+  //MyHomepageState({this.title, this.description, this.images, this.chapters});
   
   void _getData() async {
     final response = await http.get('http://mangafox.icu/latest-manga');
