@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
+import 'package:manga_app/src/pages/home_page.dart';
 
 
 
@@ -19,7 +20,6 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
   List<String> status;
   List<String> genres;
   List<String> description;
-  List<String> link = List();
   List<String> image;
   List<String> chapters = List();
   List<String> views = List();
@@ -33,13 +33,12 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
     final authorElement  = document.getElementsByClassName('manga-info-text');
     final statusElement  = document.getElementsByClassName('manga-info-text');
     final viewsElement  = document.getElementsByClassName('manga-info-text');
-    final genresElement  = document.getElementsByClassName('manga-info-text');
-    final chaptersElement = document.getElementsByClassName('row');
+    //final genresElement  = document.getElementsByClassName('manga-info-text');
+    final chaptersElement = document.getElementsByClassName('chapter_title');
     final descriptionElement = document.getElementsByClassName('leftCol');
     
 
     setState(() {
-
       title = titleElement
           .map((element) =>
       element.getElementsByTagName("h1")[0].innerHtml)
@@ -70,10 +69,10 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
       element.getElementsByTagName("div")[5].innerHtml)
           .toList();
 
-      /*chapters = chaptersElement
+      chapters = chaptersElement
           .map((element) =>
-      element.getElementsByTagName("a")[1].innerHtml)
-          .toList();*/
+      element.innerHtml.toString())
+          .toList();
     });
   }
 
@@ -102,7 +101,6 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
       body: Container(
       padding: EdgeInsets.symmetric(horizontal:20.0),
       child: ListView(
-        
         children: <Widget>[
           Column(
           children: [
@@ -150,31 +148,59 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
               child: Column(
                 children: <Widget>[
                   Text('Chapters'.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold,)),
-                  /*ListView.builder(
-                    itemCount: 1,
-                    itemBuilder:(BuildContext context, int index){
+                  ListView.builder(
+                    itemCount: chapters.length,
+                    itemBuilder:(context, int index){
                       Container(
-                      padding: EdgeInsets.all(10.0),
+                      //padding: EdgeInsets.all(10.0),
                       child: Column(
                         children: <Widget>[
                           ListTile(
-                            title: Text('chapter title', style: TextStyle(fontWeight: FontWeight.bold)),
+                            title: Text(chapters[index].toString().replaceAll('[', '').replaceAll(']', ''), style: TextStyle(fontWeight: FontWeight.bold)),
                           )
                         ],
                       )
                     );
+
+                    return Container(
+                          margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            color: Colors.white,
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 7.0,
+                                spreadRadius: 1.0,
+                                offset: Offset(2.0, 8.0)
+                              )
+                            ]
+                          ),
+                          child: GestureDetector(
+                            onTap: (){},
+                            //onTap: ()=>Navigator.pushNamed(context, 'mangainfo', arguments: title[index].replaceAll(' ', '-')),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20.0),
+                            )),
+                          /*child: GestureDetector(
+                            onTap: ()=>Navigator.pushNamed(context, 'mangainfo', arguments: [index]),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20.0),
+                              child: card,
+                            ),
+                          ),*/
+                        );
                     }
-                  )*/
+                  )
                 ],
               ),
             )
           ],
         ),
         ]
-      ),
-      
+      )     
      ),
    );
   }
-    
 }

@@ -18,6 +18,7 @@ class MyHomepageState extends State<MyHomepage> {
   List<String> description = List();
   List<String> images = List();
   List<String> chapters = List();
+  
 
   //MyHomepageState({this.title, this.description, this.images, this.chapters});
   
@@ -76,6 +77,7 @@ class MyHomepageState extends State<MyHomepage> {
         : ListView.builder(
           itemCount: description.length,
           itemBuilder: (context, int index){
+            String t = title[index];
             final card = Container(
               child: Column(
                 children: <Widget>[
@@ -138,7 +140,7 @@ class MyHomepageState extends State<MyHomepage> {
   }
 
 
-  Widget _tarjetaManga(BuildContext context, int index) {
+  /*Widget _tarjetaManga(BuildContext context, int index) {
     final card = Container(
       child: Column(
         children: <Widget>[
@@ -180,5 +182,5 @@ class MyHomepageState extends State<MyHomepage> {
         child: card,
       ),
     );
-  }
+  }*/
 }
