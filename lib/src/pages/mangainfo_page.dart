@@ -92,10 +92,7 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0,
-        title: Text(title.toString().replaceAll('[', '').replaceAll(']', ''), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0)),
-        /*title: title!=null
-        ? Text(title.toString().replaceAll('[', '').replaceAll(']', ''), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0),)
-        : title.toString()==' '*/
+        title: Text(manga.toString().replaceAll('[', '').replaceAll(']', ''), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0)),
         backgroundColor: Colors.transparent
       ),
       body: Container(
@@ -148,7 +145,7 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
               child: Column(
                 children: <Widget>[
                   Text('Chapters'.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold,)),
-                  ListView.builder(
+                  /*ListView.builder(
                     itemCount: chapters.length,
                     itemBuilder:(context, int index){
                       Container(
@@ -192,7 +189,7 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
                           ),*/
                         );
                     }
-                  )
+                  )*/
                 ],
               ),
             )

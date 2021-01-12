@@ -52,8 +52,6 @@ class MyHomepageState extends State<MyHomepage> {
       element.getElementsByTagName("a")[2].innerHtml)
           .toList();
     });
-
-    
   }
   
   @override
