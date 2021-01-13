@@ -15,14 +15,15 @@ class MangaInfoPage extends StatefulWidget {
 
 class _MangaInfoPageState extends State<MangaInfoPage> {
 
-  List<String> title;
-  List<String> author;
-  List<String> status;
+  String title;
+  String author;
+  String status;
   List<String> genres;
   List<String> description;
   List<String> image;
   List<String> chapters = List();
-  List<String> views = List();
+  String views;
+  String name;
 
   void getData(String manga) async {
     final response = await http.get('http://mangafox.icu/manga/$manga');
@@ -34,15 +35,17 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
     final statusElement  = document.getElementsByClassName('manga-info-text');
     final viewsElement  = document.getElementsByClassName('manga-info-text');
     //final genresElement  = document.getElementsByClassName('manga-info-text');
-    final chaptersElement = document.getElementsByClassName('chapter_title');
+    final chaptersElement = document.getElementsByClassName('chapter-list');
     final descriptionElement = document.getElementsByClassName('leftCol');
     
+    //dom.Document d = parser.parse(chaptersElement);
+    //final cE = d.getElementsByClassName('row');
 
     setState(() {
       title = titleElement
           .map((element) =>
       element.getElementsByTagName("h1")[0].innerHtml)
-          .toList();
+          .toString();
 
       image = imageElement
           .map((element) =>
@@ -52,17 +55,17 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
       author = authorElement
           .map((element) =>
       element.getElementsByTagName("li")[1].innerHtml)
-          .toList();
+          .toString();
 
       status = statusElement
           .map((element) =>
       element.getElementsByTagName("li")[2].innerHtml)
-          .toList();
+          .toString();
 
       views = viewsElement
           .map((element) =>
       element.getElementsByTagName("li")[5].innerHtml)
-          .toList();
+          .toString();
 
       description = descriptionElement
           .map((element) =>
@@ -71,7 +74,7 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
 
       chapters = chaptersElement
           .map((element) =>
-      element.innerHtml.toString())
+      element.getElementsByTagName("a")[0].attributes['href'])
           .toList();
     });
   }
@@ -79,20 +82,26 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
   @override
   // ignore: must_call_super
   void initState() {
-    //getData();
+    super.initState();
+    //getData(name);
+    title='';
+    author ='';
+    views ='';
+    status ='';
   }
 
   @override
   Widget build(BuildContext context) {
     
     var manga = ModalRoute.of(context).settings.arguments;
+    //name = manga;
     getData(manga);
 
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0,
-        title: Text(manga.toString().replaceAll('[', '').replaceAll(']', ''), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0)),
+        title: Text(title.toString().replaceAll('(', '').replaceAll(')', ''), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0)),
         backgroundColor: Colors.transparent
       ),
       body: Container(
@@ -120,15 +129,15 @@ class _MangaInfoPageState extends State<MangaInfoPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(manga.toString().replaceAll('-', ' '), style: Theme.of(context).textTheme.headline6, softWrap: true,),
-                      Text(author.toString().replaceAll('[', '').replaceAll(']', ''), style: Theme.of(context).textTheme.subtitle1, overflow: TextOverflow.ellipsis,),
-                      Text(status.toString().replaceAll('[', '').replaceAll(']', ''), style: Theme.of(context).textTheme.subtitle1, overflow: TextOverflow.ellipsis,),
+                      Text(author.toString().replaceAll('(', '').replaceAll(')', ''), style: Theme.of(context).textTheme.subtitle1, overflow: TextOverflow.ellipsis,),
+                      Text(status.toString().replaceAll('(', '').replaceAll(')', ''), style: Theme.of(context).textTheme.subtitle1, overflow: TextOverflow.ellipsis,),
                       Row(
                         children: <Widget>[
                           Container(
                             margin: EdgeInsets.only(right: 5.0),
                             child: Icon(Icons.remove_red_eye_rounded)
                           ),
-                          Text(views.toString().replaceAll('[', '').replaceAll(']', ''), style: Theme.of(context).textTheme.subtitle1,)
+                          Text(views.toString().replaceAll('(', '').replaceAll(')', ''), style: Theme.of(context).textTheme.subtitle1,)
                         ],
                       )
                     ],

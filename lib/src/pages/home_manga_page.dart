@@ -20,7 +20,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.transparent
       ),
       backgroundColor: Colors.white,
-      body: mangaModel.title.length == 0
+      body: mangaModel.title == null
         ? Center(child: CircularProgressIndicator())
         : _listaMangas()
     );
@@ -49,7 +49,6 @@ class HomePage extends StatelessWidget {
                         title: Text(mangaModel.title[index], style: TextStyle(fontWeight: FontWeight.bold)),
                         subtitle: Text(mangaModel.chapters[index]),
                       )
-                      
                     ],
                   )
                 )
