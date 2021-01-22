@@ -1,17 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:manga_app/src/inherited/inherited_manga.dart';
 import 'package:manga_app/src/models/manga_model.dart';
 import 'package:manga_app/src/providers.dart/mangas_provider.dart';
 
-class HomePage extends StatelessWidget {
 
-  final mangaProvider = new MangasProvider();
-  final MangaModel mangaModel = new MangaModel();
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return InheritedManga(
+      helper: MangasProvider(),
+      child: MaterialApp(
+        title: 'Mangacan',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: HomePage(title: 'Mangacan - Manga Reader'),
+      ),
+    );
+  }
+}
 
-    mangaProvider.getData();
+class HomePage extends StatefulWidget {
+  
+  HomePage({Key key, this.title, this.chapters, this.image}) : super(key: key);
+  final String title;
+  final String chapters;
+  final String image;
+  @override
+  _HomePageState createState() => _HomePageState();
 
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -20,65 +42,85 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.transparent
       ),
       backgroundColor: Colors.white,
-      body: mangaModel.title == null
-        ? Center(child: CircularProgressIndicator())
-        : _listaMangas()
-    );
-  }
+      body: FutureBuilder<List<Manga>>(
+        initialData: List<Manga>(),
+        future: InheritedManga.of(context).helper.getManga(),
+        builder: (BuildContext context, AsyncSnapshot<List<Manga>> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.active:
+              case ConnectionState.waiting:
+                return Center(
+                  child: RefreshProgressIndicator(),
+                );
+              case ConnectionState.none:
+                return Center(
+                  child: Text('No connection'),
+                );
+              case ConnectionState.done:
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Data received incorrectly‎'),
+                  );
+                }
+                return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, int index){
+                      final card = Container(
+                        child: Column(
+                          children: <Widget>[
+                            FadeInImage(
+                              image: NetworkImage(snapshot.data[index].image),
+                              placeholder: AssetImage('assets/Spinner-1s-201px.gif'),
+                              fadeInDuration: Duration(milliseconds: 100),
+                              height: 200.0,
+                              fit: BoxFit.cover,
+                              //width: double.infinity,
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(10.0),
+                              child: Column(
+                                children: <Widget>[
+                                  ListTile(
+                                    title: Text(snapshot.data[index].title, style: TextStyle(fontWeight: FontWeight.bold)),
+                                    subtitle: Text(snapshot.data[index].chapters),
+                                  )
+                                  
+                                ],
+                              )
+                            )
+                          ],
+                        )
+                      );
 
-  Widget _listaMangas() {
-    return ListView.builder(
-        itemCount: mangaModel.title.length,
-        itemBuilder: (context, int index){
-          final card = Container(
-            child: Column(
-              children: <Widget>[
-                FadeInImage(
-                  image: NetworkImage(mangaModel.image[index]),
-                  placeholder: AssetImage('assets/Spinner-1s-201px.gif'),
-                  fadeInDuration: Duration(milliseconds: 100),
-                  height: 200.0,
-                  fit: BoxFit.cover,
-                  //width: double.infinity,
-                ),
-                Container(
-                  padding: EdgeInsets.all(10.0),
-                  child: Column(
-                    children: <Widget>[
-                      ListTile(
-                        title: Text(mangaModel.title[index], style: TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text(mangaModel.chapters[index]),
-                      )
-                    ],
-                  )
-                )
-              ],
-            )
-           );
-
-        return Container(
-          margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
-          padding: EdgeInsets.all(10.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Colors.white,
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 7.0,
-                spreadRadius: 1.0,
-                offset: Offset(2.0, 8.0)
-              )
-            ]
-          ),
-          child: GestureDetector(
-            onTap: ()=>Navigator.pushNamed(context, 'mangainfo', arguments: mangaModel.title[index].replaceAll(' ', '-')),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: card,
-            )),
-        );
-      },
+                    return Container(
+                      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
+                      padding: EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        color: Colors.white,
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 7.0,
+                            spreadRadius: 1.0,
+                            offset: Offset(2.0, 8.0)
+                          )
+                        ]
+                      ),
+                      child: GestureDetector(
+                        onTap: ()=>Navigator.pushNamed(context, 'mangainfo', arguments: snapshot.data[index]),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20.0),
+                          child: card,
+                        )
+                      ),
+                    );
+                  },
+                );
+            }
+          return Column();
+        },
+      )
     );
   }
 }

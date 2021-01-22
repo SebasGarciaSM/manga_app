@@ -1,16 +1,18 @@
-class MangaModel{
+class Manga{
 
-  List<String> title;
-  List<String> status;
-  List<String> description;
-  List<String> image;
-  List<String> views;
-  List<String> genres;
-  List<String> author;
-  List<String> chapters;
+  String title;
+  String chapters;
+  String image;
+  String url;
+  String description;
+  String authors;
 
-  MangaModel({this.title, this.author, this.status, this.chapters, this.description, this.image, this.views, this.genres});
-
-  
+  Manga({
+    this.title,
+    this.chapters,
+    this.image,
+    this.url,
+    this.description,
+    this.authors});
 
 }
