@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manga_app/src/inherited/inherited_manga.dart';
 import 'package:manga_app/src/pages/home_manga_page.dart';
 import 'package:manga_app/src/pages/home_page.dart';
+import 'package:manga_app/src/pages/manga_chapter_page.dart';
 import 'package:manga_app/src/pages/manga_details_page.dart';
 import 'package:manga_app/src/pages/mangainfo_page.dart';
 import 'package:manga_app/src/providers.dart/mangas_provider.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
         routes: {
           'home'       : ( BuildContext context ) => HomePage(),
           'mangainfo' : ( BuildContext context ) => MangaDetails(),
+          'mangachapter' : ( BuildContext context ) => MangaChapter()
         }
       ),
     );

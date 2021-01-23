@@ -6,6 +6,9 @@ class Manga{
   String url;
   String description;
   String authors;
+  String views;
+  String status;
+  String allChapters;
 
   Manga({
     this.title,
@@ -13,6 +16,10 @@ class Manga{
     this.image,
     this.url,
     this.description,
-    this.authors});
+    this.authors,
+    this.views,
+    this.status,
+    this.allChapters
+  });
 
 }

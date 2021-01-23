@@ -9,7 +9,8 @@ class MangasProvider{
 
   Client _client;
   List<Manga> _manga = [];
-  List<Manga> _mangaDetails = [];
+  List<Manga> _mangaChapters = [];
+  Manga _mangaDetails;
 
   MangasProvider(){
     this._client = Client();
@@ -45,7 +46,7 @@ class MangasProvider{
     return _manga;
   }
 
-  Future<List<Manga>> getMangaDetails(String url) async{
+  Future<Manga> getMangaDetails(String url) async{
 
     final response = await _client.get(url);
     final document = parse(response.body);
@@ -57,10 +58,42 @@ class MangasProvider{
       element.getElementsByTagName("li")[1].innerHtml)
           .toString();
 
-    final manga = Manga(authors: authors);
-    _mangaDetails.add(manga);
+    final views = detailsElements
+          .map((element) =>
+      element.getElementsByTagName("li")[5].innerHtml)
+          .toString();
 
-    return _mangaDetails;
+    final status = detailsElements
+          .map((element) =>
+      element.getElementsByTagName("li")[2].innerHtml)
+          .toString();
+
+    final manga = Manga(authors: authors, views: views, status: status);
+    return manga;
+  }
+
+  Future<List<Manga>> getChapters(String url) async{
+
+
+    if (_mangaChapters.length != 0){
+      _mangaChapters.clear();
+    }
+
+    final response = await _client.get(url);
+    final document = parse(response.body);
+
+    final mElements = document.getElementsByClassName('row');
+
+    for (Element m in mElements){
+      if(m.className=='row'){
+        final aTag = m.getElementsByTagName('span')[0].getElementsByTagName('a')[0];
+        final allChapters = aTag.attributes['title'];
+        
+        final manga = Manga(allChapters: allChapters);
+        _mangaChapters.add(manga);
+      }
+    }
+    return _mangaChapters;
   }
 
 }
