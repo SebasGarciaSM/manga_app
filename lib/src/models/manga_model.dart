@@ -9,6 +9,7 @@ class Manga{
   String views;
   String status;
   String allChapters;
+  String chapterSource;
 
   Manga({
     this.title,
@@ -19,7 +20,8 @@ class Manga{
     this.authors,
     this.views,
     this.status,
-    this.allChapters
+    this.allChapters,
+    this.chapterSource
   });
 
 }

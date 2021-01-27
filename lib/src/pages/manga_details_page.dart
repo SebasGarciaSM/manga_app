@@ -15,9 +15,6 @@ class _MangaDetailsState extends State<MangaDetails> {
   Widget build(BuildContext context) {
 
     final Manga manga = ModalRoute.of(context).settings.arguments;
-    //manga.authors = '';
-
-    final MangasProvider m = new MangasProvider();
 
     return Scaffold(
       appBar: AppBar(
@@ -47,10 +44,11 @@ class _MangaDetailsState extends State<MangaDetails> {
                       child: Image(
                         image:  NetworkImage(manga.image),
                         height: 170.0,
+                        width: 115.0,
                       ),
                     ),
                   ),
-                  SizedBox(width: 20.0),
+                  SizedBox(width: 15.0),
                   Flexible(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,7 +109,7 @@ class _MangaDetailsState extends State<MangaDetails> {
                                 );
                               }
                               return ListView.builder(
-                                scrollDirection: Axis.vertical,
+                                //scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
                                   itemCount: snapshot.data.length,
                                   itemBuilder: (context, int index){

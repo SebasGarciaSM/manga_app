@@ -33,6 +33,8 @@ dependencies:
   html: ^0.14.0+4
   url_launcher:
   flutter_staggered_animations:
+  photo_view:
+  carousel_slider:
 
 dev_dependencies:
   flutter_test:

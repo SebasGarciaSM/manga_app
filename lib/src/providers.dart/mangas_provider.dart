@@ -10,6 +10,7 @@ class MangasProvider{
   Client _client;
   List<Manga> _manga = [];
   List<Manga> _mangaChapters = [];
+  List<Manga> _mangaChapterImages = [];
   Manga _mangaDetails;
 
   MangasProvider(){
@@ -74,7 +75,6 @@ class MangasProvider{
 
   Future<List<Manga>> getChapters(String url) async{
 
-
     if (_mangaChapters.length != 0){
       _mangaChapters.clear();
     }
@@ -88,12 +88,36 @@ class MangasProvider{
       if(m.className=='row'){
         final aTag = m.getElementsByTagName('span')[0].getElementsByTagName('a')[0];
         final allChapters = aTag.attributes['title'];
+        final chapterSource = aTag.attributes['href'];
         
-        final manga = Manga(allChapters: allChapters);
+        final manga = Manga(allChapters: allChapters, chapterSource: chapterSource);
         _mangaChapters.add(manga);
       }
     }
     return _mangaChapters;
+  }
+
+  Future<List<Manga>> getChapterImages(String url) async{
+    
+    if (_mangaChapters.length != 0){
+      _mangaChapters.clear();
+    }
+
+    final response = await _client.get(url);
+    final document = parse(response.body);
+
+    final mElements = document.getElementsByClassName('comic_wraCon text-center');
+
+    for(Element m in mElements){
+        final tag = m.getElementsByTagName('img')[0];
+        final allChapters = tag.attributes['src'];
+
+        final manga = Manga(allChapters: allChapters);
+        _mangaChapters.add(manga);
+      
+    }
+
+    return _mangaChapterImages;
   }
 
 }
