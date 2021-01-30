@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text('MANGAFOX', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30.0)),
+        title: Text('MANHUAS.NET', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30.0)),
         centerTitle: false,
         backgroundColor: Colors.transparent
       ),
@@ -82,7 +82,16 @@ class _HomePageState extends State<HomePage> {
                                 children: <Widget>[
                                   ListTile(
                                     title: Text(snapshot.data[index].title, style: TextStyle(fontWeight: FontWeight.bold)),
-                                    subtitle: Text(snapshot.data[index].chapters),
+                                    subtitle: /*Text(snapshot.data[index].rating)*/
+                                    Row(
+                                      children: <Widget>[
+                                        Container(
+                                          margin: EdgeInsets.only(right: 5.0),
+                                          child: Icon(Icons.star, color: Colors.amber,)
+                                        ),
+                                        Text(snapshot.data[index].rating, style: TextStyle(fontWeight: FontWeight.bold),)
+                                      ],
+                                    ),
                                   )
                                   
                                 ],

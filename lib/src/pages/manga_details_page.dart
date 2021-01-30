@@ -20,7 +20,7 @@ class _MangaDetailsState extends State<MangaDetails> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0,
-        title: Text(manga.title, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15.0)),
+        title: Text(manga.title, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13.0)),
         backgroundColor: Colors.transparent
       ),
       body: FutureBuilder<Manga>(
@@ -55,23 +55,24 @@ class _MangaDetailsState extends State<MangaDetails> {
                       children: <Widget>[
                         Text(manga.title, style: Theme.of(context).textTheme.headline6, softWrap: true,),
                         Text( snapshot.data.authors == null
-                           ? 'Authors(s) :'
-                           : snapshot.data.authors.substring(1, snapshot.data.authors.length-1)
+                           ? 'Authors(s): '
+                           : 'Authors(s): ${snapshot.data.authors.substring(1, snapshot.data.authors.length-1).trim()}'
+                        ),
+                        Text( snapshot.data.type == null
+                           ? 'Type(s): '
+                           : 'Type(s): ${snapshot.data.type.substring(1, snapshot.data.type.length-1).trim()}'
                         ),
                         Text( snapshot.data.status == null
-                           ? 'Status :'
-                           : snapshot.data.status.substring(1, snapshot.data.status.length-1)
+                           ? 'Status(s): '
+                           : 'Status(s): ${snapshot.data.status.substring(1, snapshot.data.status.length-1).trim()}'
                         ),
                         Row(
                           children: <Widget>[
                             Container(
                               margin: EdgeInsets.only(right: 5.0),
-                              child: Icon(Icons.remove_red_eye_rounded)
+                              child: Icon(Icons.star, color: Colors.amber)
                             ),
-                            Text(snapshot.data.views == null
-                              ? 'view :'
-                              : snapshot.data.views.substring(1, snapshot.data.views.length-1)
-                            )
+                            Text(manga.rating)
                           ],
                         )
                       ],
@@ -81,7 +82,11 @@ class _MangaDetailsState extends State<MangaDetails> {
               ),
               SizedBox(height: 20.0),
               Container(
-                child: Text(manga.description.replaceAll('Read more', ''), textAlign: TextAlign.justify),
+                child: Text( 
+                  snapshot.data.status == null
+                  ? ''
+                  : '${snapshot.data.description.substring(1, snapshot.data.description.length-1).replaceAll('<br>', '')}', textAlign: TextAlign.justify
+                )
               ),
               SizedBox(height: 20.0),
               Container(
@@ -121,7 +126,7 @@ class _MangaDetailsState extends State<MangaDetails> {
                                             child: Column(
                                               children: <Widget>[
                                                 ListTile(
-                                                  title: Text(snapshot.data[index].allChapters, style: TextStyle(fontWeight: FontWeight.bold)),
+                                                  title: Text(snapshot.data[index].chapterTitle, style: TextStyle(fontWeight: FontWeight.bold)),
                                                 )
                                               ],
                                             )
@@ -146,7 +151,7 @@ class _MangaDetailsState extends State<MangaDetails> {
                                       ]
                                     ),
                                     child: GestureDetector(
-                                      onTap: ()=>Navigator.pushNamed(context, 'mangachapter', arguments: manga.title),
+                                      onTap: ()=>Navigator.pushNamed(context, 'mangachapter', arguments: snapshot.data[index].chapterTitle),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(20.0),
                                         child: card,

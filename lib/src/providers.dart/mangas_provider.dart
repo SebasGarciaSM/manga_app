@@ -10,7 +10,7 @@ class MangasProvider{
   Client _client;
   List<Manga> _manga = [];
   List<Manga> _mangaChapters = [];
-  List<Manga> _mangaChapterImages = [];
+  List<Manga> mangaChapterImages = [];
   Manga _mangaDetails;
 
   MangasProvider(){
@@ -21,60 +21,72 @@ class MangasProvider{
 
     if (_manga.length != 0) return _manga;
 
-    final response = await _client.get('http://mangafox.icu/latest-manga');
+    final response = await _client.get('https://manhuas.net/');
     final document = parse(response.body);
 
-    final mElements = document.getElementsByClassName('list-truyen-item-wrap');
+    final mElements = document.getElementsByClassName('page-item-detail manga');
 
     for (Element m in mElements) {
-        final aTag = m.getElementsByTagName('a')[0];
-        final title = aTag.attributes['title'];
+        final aTag = m.getElementsByTagName('h3')[0].getElementsByTagName('a')[0];
+        final title = aTag.text;
         final url = aTag.attributes['href'];
 
-        final aTag2 = m.getElementsByTagName('a')[2];
-        final chapters = aTag2.text;
+        final aTag2 = m.getElementsByTagName('span')[0];
+        final rating = aTag2.text;
 
         final imgTag = m.getElementsByTagName('a')[0].getElementsByTagName('img')[0];
         final image = imgTag.attributes['src'];
-
-        final pTag = m.getElementsByTagName('p')[0];
-        final description = pTag.text;
         
-        final manga = Manga(title: title, url: url, chapters: chapters, image: image, description: description);
+        final manga = Manga(title: title, url: url, rating: rating, image: image);
         _manga.add(manga);
      
     }
     return _manga;
   }
+  
 
   Future<Manga> getMangaDetails(String url) async{
 
     final response = await _client.get(url);
     final document = parse(response.body);
 
-    final detailsElements = document.getElementsByClassName('manga-info-text');
+    final detailsElements = document.getElementsByClassName('post-content');
+    final details2Elements = document.getElementsByClassName('post-status');
+    final details3Elements = document.getElementsByClassName('summary__content');
+    
 
     final authors = detailsElements
           .map((element) =>
-      element.getElementsByTagName("li")[1].innerHtml)
+      element.getElementsByTagName("a")[0].innerHtml)
           .toString();
 
-    final views = detailsElements
+    final type = detailsElements
           .map((element) =>
-      element.getElementsByTagName("li")[5].innerHtml)
+      element.getElementsByTagName("div")[30].innerHtml)
           .toString();
 
-    final status = detailsElements
+
+    final release = details2Elements
           .map((element) =>
-      element.getElementsByTagName("li")[2].innerHtml)
+      element.getElementsByTagName("a")[0].innerHtml)
           .toString();
 
-    final manga = Manga(authors: authors, views: views, status: status);
+    final status = details2Elements
+          .map((element) =>
+      element.getElementsByTagName("div")[5].innerHtml)
+          .toString();
+    
+    final description = details3Elements
+          .map((element) =>
+      element.getElementsByTagName("p")[0].innerHtml)
+          .toString();
+
+    final manga = Manga(authors: authors, type: type, status: status, release: release, description: description);
     return manga;
   }
 
-  Future<List<Manga>> getChapters(String url) async{
 
+  Future<List<Manga>> getChapters(String url) async{
     if (_mangaChapters.length != 0){
       _mangaChapters.clear();
     }
@@ -82,42 +94,41 @@ class MangasProvider{
     final response = await _client.get(url);
     final document = parse(response.body);
 
-    final mElements = document.getElementsByClassName('row');
+    final mElements = document.getElementsByClassName('wp-manga-chapter  ');
 
     for (Element m in mElements){
-      if(m.className=='row'){
-        final aTag = m.getElementsByTagName('span')[0].getElementsByTagName('a')[0];
-        final allChapters = aTag.attributes['title'];
+        final aTag = m.getElementsByTagName('div')[7];
+        final chapterTitle = aTag.text;
         final chapterSource = aTag.attributes['href'];
         
-        final manga = Manga(allChapters: allChapters, chapterSource: chapterSource);
+        final manga = Manga(chapterTitle: chapterTitle, chapterSource: chapterSource);
         _mangaChapters.add(manga);
-      }
+      
     }
     return _mangaChapters;
   }
 
+
   Future<List<Manga>> getChapterImages(String url) async{
     
-    if (_mangaChapters.length != 0){
-      _mangaChapters.clear();
+    if (mangaChapterImages.length != 0){
+      mangaChapterImages.clear();
     }
 
     final response = await _client.get(url);
     final document = parse(response.body);
 
-    final mElements = document.getElementsByClassName('comic_wraCon text-center');
+    final mElements = document.getElementsByClassName('wp-manga-chapter  ');
 
     for(Element m in mElements){
         final tag = m.getElementsByTagName('img')[0];
         final allChapters = tag.attributes['src'];
 
-        final manga = Manga(allChapters: allChapters);
-        _mangaChapters.add(manga);
-      
+        final manga = Manga(chapterTitle: allChapters);
+        mangaChapterImages.add(manga);
     }
 
-    return _mangaChapterImages;
+    return mangaChapterImages;
   }
 
 }
