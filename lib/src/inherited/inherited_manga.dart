@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:manga_app/src/providers.dart/mangas_provider.dart';
+import 'package:manga_app/src/providers/mangas_provider.dart';
 
 class InheritedManga extends InheritedWidget {
   final MangasProvider helper;

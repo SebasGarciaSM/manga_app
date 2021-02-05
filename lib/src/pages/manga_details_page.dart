@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manga_app/src/inherited/inherited_manga.dart';
 import 'package:manga_app/src/models/manga_model.dart';
-import 'package:manga_app/src/providers.dart/mangas_provider.dart';
+import 'package:manga_app/src/providers/mangas_provider.dart';
 
 class MangaDetails extends StatefulWidget {
   MangaDetails({Key key, this.authors}) : super(key: key);
@@ -72,7 +72,10 @@ class _MangaDetailsState extends State<MangaDetails> {
                               margin: EdgeInsets.only(right: 5.0),
                               child: Icon(Icons.star, color: Colors.amber)
                             ),
-                            Text(manga.rating)
+                            Text(
+                              snapshot.data.rating == null
+                              ? 'stars'
+                              : '${snapshot.data.rating.substring(1, snapshot.data.rating.length-1)} stars')
                           ],
                         )
                       ],
@@ -85,7 +88,7 @@ class _MangaDetailsState extends State<MangaDetails> {
                 child: Text( 
                   snapshot.data.status == null
                   ? ''
-                  : '${snapshot.data.description.substring(1, snapshot.data.description.length-1).replaceAll('<br>', '')}', textAlign: TextAlign.justify
+                  : '${snapshot.data.description}', textAlign: TextAlign.justify
                 )
               ),
               SizedBox(height: 20.0),
@@ -96,8 +99,8 @@ class _MangaDetailsState extends State<MangaDetails> {
                     FutureBuilder<List<Manga>>(
                       initialData: List<Manga>(),
                       future: InheritedManga.of(context).helper.getChapters(manga.url),
-                      builder: (BuildContext context, AsyncSnapshot<List<Manga>> snapshot) {
-                          switch (snapshot.connectionState) {
+                      builder: (BuildContext context, AsyncSnapshot<List<Manga>> snapshot2) {
+                          switch (snapshot2.connectionState) {
                             case ConnectionState.active:
                             case ConnectionState.waiting:
                               return Center(
@@ -108,7 +111,7 @@ class _MangaDetailsState extends State<MangaDetails> {
                                 child: Text('No connection'),
                               );
                             case ConnectionState.done:
-                              if (snapshot.hasError) {
+                              if (snapshot2.hasError) {
                                 return Center(
                                   child: Text('Data received incorrectly‎'),
                                 );
@@ -116,7 +119,7 @@ class _MangaDetailsState extends State<MangaDetails> {
                               return ListView.builder(
                                 //scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
-                                  itemCount: snapshot.data.length,
+                                  itemCount: snapshot2.data.length,
                                   itemBuilder: (context, int index){
                                     final card = Container(
                                       child: Column(
@@ -126,7 +129,7 @@ class _MangaDetailsState extends State<MangaDetails> {
                                             child: Column(
                                               children: <Widget>[
                                                 ListTile(
-                                                  title: Text(snapshot.data[index].chapterTitle, style: TextStyle(fontWeight: FontWeight.bold)),
+                                                  title: Text(snapshot2.data[index].chapterTitle, style: TextStyle(fontWeight: FontWeight.bold)),
                                                 )
                                               ],
                                             )
@@ -137,7 +140,6 @@ class _MangaDetailsState extends State<MangaDetails> {
 
                                   return Container(
                                     margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 3.0),
-                                    //padding: EdgeInsets.all(5.0),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20.0),
                                       color: Colors.white,
@@ -151,7 +153,7 @@ class _MangaDetailsState extends State<MangaDetails> {
                                       ]
                                     ),
                                     child: GestureDetector(
-                                      onTap: ()=>Navigator.pushNamed(context, 'mangachapter', arguments: snapshot.data[index].chapterTitle),
+                                      onTap: ()=>Navigator.pushNamed(context, 'mangachapter', arguments: snapshot2.data[index]),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(20.0),
                                         child: card,

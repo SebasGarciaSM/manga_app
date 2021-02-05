@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/src/inherited/inherited_manga.dart';
 import 'package:manga_app/src/models/manga_model.dart';
-import 'package:manga_app/src/providers.dart/mangas_provider.dart';
+import 'package:manga_app/src/providers/mangas_provider.dart';
 import 'package:web_scraper/web_scraper.dart';
 
 
@@ -13,8 +13,9 @@ import 'package:web_scraper/web_scraper.dart';
   
   class _MangaChapterState extends State<MangaChapter> {
     
+    int currentPage = 1;
 
-    List<Map<String, dynamic>> contentPages;
+    /*List<Map<String, dynamic>> contentPages;
     bool dataFetched = false;
 
     void getContent() async{
@@ -29,89 +30,125 @@ import 'package:web_scraper/web_scraper.dart';
           dataFetched = true;
         });
       }
-    }
+    }*/
 
     @override
-  void initState() {
-    super.initState();
-    getContent();
-  }
+    void initState() {
+      super.initState();
+    }
 
     @override
     Widget build(BuildContext context) {
 
-      final mangaChapter = ModalRoute.of(context).settings.arguments;
+      final Manga mangaChapter = ModalRoute.of(context).settings.arguments;
+      
 
       return Scaffold(
         appBar: AppBar(
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.skip_previous_rounded,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                print('TAP');
+                setState(() {
+                  currentPage --;
+                });
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.skip_next_rounded,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                print('TAP');
+                setState(() {
+                  currentPage ++;
+                });
+              },
+            )
+          ],
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0,
-        title: Text(mangaChapter.toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12.0)),
+        title: Text(mangaChapter.chapterTitle, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12.0)),
         backgroundColor: Colors.transparent
         ),
-        body: dataFetched
-        ? Container(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: contentPages.length,
-            itemBuilder: (context, index){
-              return Stack(
-                children: [
-                  Image.network(
-                  contentPages[index]['attributes']['src'].toString().trim(),
-                  fit: BoxFit.fitWidth,
-                  loadingBuilder: (context, child, loadingProgress){
-                    if(loadingProgress == null) return child;
-
-                    return Center(
-                      child: CircularProgressIndicator()
-                    );
-                  },
-                ),
-
-                Positioned(
-                top: 0.0,
-                bottom: 0.0,
-                right: 0.0,
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                  child: Text(
-                    '${(contentPages.indexOf(contentPages[index])) + 1}/${contentPages.length}',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      shadows: [
-                        Shadow( // bottomLeft
-                      offset: Offset(-1.5, -1.5),
-                      color: Colors.black
-                          ),
-                          Shadow( // bottomRight
-                      offset: Offset(1.5, -1.5),
-                      color: Colors.black
-                          ),
-                          Shadow( // topRight
-                      offset: Offset(1.5, 1.5),
-                      color: Colors.black
-                          ),
-                          Shadow( // topLeft
-                      offset: Offset(-1.5, 1.5),
-                      color: Colors.black
-                          )
-                      ]
-                    ),
-                  ),
-                ),
-                ),
-                ]
-              );
+        body: FutureBuilder<List<Manga>>(
+          initialData: List<Manga>(),
+          future: InheritedManga.of(context).helper.getChapterImages('${mangaChapter.chapterSource}$currentPage.html'),
+          builder: (BuildContext context, AsyncSnapshot<List<Manga>> snapshot){
+          return InkWell(
+            onTap: (){
+              print('TAP');
+              setState(() {
+                currentPage ++;
+              });
             },
-          )
-        )
-        : Center(
-          child: CircularProgressIndicator()
-        ),
-      );
+            child: Container(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index){
+                  return Stack(
+                    children: [
+                      Image.network(
+                      snapshot.data[index].chapterSource,
+                      fit: BoxFit.fitWidth,
+                      loadingBuilder: (context, child, loadingProgress){
+                        if(loadingProgress == null) return child;
+
+                        return Center(
+                          child: CircularProgressIndicator()
+                        );
+                      },
+                    ),
+
+                    Positioned(
+                    top: 0.0,
+                    bottom: 0.0,
+                    right: 0.0,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                      child: Text('${currentPage.toString()}/${snapshot.data[index].chapterLength.toString()}',
+                        //'${(snapshot.data[index].(contentPages[index])) + 1}/${snapshot.data.length}',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow( // bottomLeft
+                          offset: Offset(-1.5, -1.5),
+                          color: Colors.black
+                              ),
+                              Shadow( // bottomRight
+                          offset: Offset(1.5, -1.5),
+                          color: Colors.black
+                              ),
+                              Shadow( // topRight
+                          offset: Offset(1.5, 1.5),
+                          color: Colors.black
+                              ),
+                              Shadow( // topLeft
+                          offset: Offset(-1.5, 1.5),
+                          color: Colors.black
+                              )
+                          ]
+                        ),
+                      ),
+                    ),
+                    ),
+                    ]
+                  );
+                },
+              )
+            ),
+          );
+        },
+        
+      ));
     }
   }
 

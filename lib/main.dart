@@ -5,7 +5,7 @@ import 'package:manga_app/src/pages/home_page.dart';
 import 'package:manga_app/src/pages/manga_chapter_page.dart';
 import 'package:manga_app/src/pages/manga_details_page.dart';
 import 'package:manga_app/src/pages/mangainfo_page.dart';
-import 'package:manga_app/src/providers.dart/mangas_provider.dart';
+import 'package:manga_app/src/providers/mangas_provider.dart';
  
 void main() => runApp(MyApp());
  

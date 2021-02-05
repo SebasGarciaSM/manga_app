@@ -11,6 +11,8 @@ class Manga{
   String chapterTitle;
   String chapterSource;
   String release;
+  int chapterLength;
+  String content;
 
   Manga({
     this.title,
@@ -23,7 +25,9 @@ class Manga{
     this.status,
     this.chapterTitle,
     this.chapterSource,
-    this.release
+    this.release,
+    this.chapterLength,
+    this.content
   });
 
 }

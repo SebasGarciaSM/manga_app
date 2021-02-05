@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manga_app/src/inherited/inherited_manga.dart';
 import 'package:manga_app/src/models/manga_model.dart';
-import 'package:manga_app/src/providers.dart/mangas_provider.dart';
+import 'package:manga_app/src/providers/mangas_provider.dart';
 
 
 class MyApp extends StatelessWidget {
@@ -32,12 +32,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  final Manga manga = new Manga();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text('MANHUAS.NET', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30.0)),
+        title: Text('MANGATOWN', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30.0)),
         centerTitle: false,
         backgroundColor: Colors.transparent
       ),
@@ -63,6 +66,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
                 return ListView.builder(
+                    //itemCount: 1,
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, int index){
                       final card = Container(
@@ -82,16 +86,16 @@ class _HomePageState extends State<HomePage> {
                                 children: <Widget>[
                                   ListTile(
                                     title: Text(snapshot.data[index].title, style: TextStyle(fontWeight: FontWeight.bold)),
-                                    subtitle: /*Text(snapshot.data[index].rating)*/
+                                    /*subtitle: /*Text(snapshot.data[index].rating)*/
                                     Row(
                                       children: <Widget>[
                                         Container(
                                           margin: EdgeInsets.only(right: 5.0),
                                           child: Icon(Icons.star, color: Colors.amber,)
                                         ),
-                                        Text(snapshot.data[index].rating, style: TextStyle(fontWeight: FontWeight.bold),)
+                                        Text('manga.rating[index]', style: TextStyle(fontWeight: FontWeight.bold),)
                                       ],
-                                    ),
+                                    ),*/
                                   )
                                   
                                 ],
@@ -117,6 +121,7 @@ class _HomePageState extends State<HomePage> {
                         ]
                       ),
                       child: GestureDetector(
+                        //onTap: (){},
                         onTap: ()=>Navigator.pushNamed(context, 'mangainfo', arguments: snapshot.data[index]),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20.0),
